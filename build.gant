@@ -1,0 +1,35 @@
+includeTargets << gant.targets.Clean
+ant.taskdef (  name : 'groovyc' , classname : 'org.codehaus.groovy.ant.Groovyc' )
+groovyHome = System.getenv().GROOVY_HOME
+path(id: 'projectJars') { fileset(dir: 'lib', includes: '*.jar')}
+jarfiles = path(refid: 'projectJars') //jar-on belul nem mukodott a path()
+cleanDirectory << 'bin'
+cleanPattern << 'goauthclient.jar'
+
+
+target(name: 'default') {
+	echo ("Building with groovy home: ${groovyHome}")
+	mkdir (dir: 'bin')
+	groovyc (
+		classpath: path(refid: 'projectJars'),
+		srcdir: 'src',
+		destdir: 'bin'
+	)
+	mkdir(dir: 'bin/META-INF')
+	manifest ( file : 'bin/META-INF/MANIFEST.MF' ) {
+		attribute ( name : 'Main-Class' , value: 'GenericClient' )
+	}
+	jar(
+		destfile: 'goauthclient.jar',
+		basedir: 'bin',
+		manifest: 'bin/META-INF/MANIFEST.MF'
+	) 
+	{
+		jarfiles.each { 
+			zipfileset(src: it)
+		}
+		zipfileset() {
+			fileset(dir: "${groovyHome}/embeddable/")
+		}
+	}
+}

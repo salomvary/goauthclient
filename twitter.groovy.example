@@ -1,0 +1,6 @@
+consumerKey="your key"
+consumerSecret="your secret"
+requestUrl="http://twitter.com/oauth/request_token"
+accessUrl="http://twitter.com/oauth/access_token"
+authorizationUrl="http://twitter.com/oauth/authorize"
+callbackUrl="oob"
