@@ -4,7 +4,7 @@ groovyHome = System.getenv().GROOVY_HOME
 path(id: 'projectJars') { fileset(dir: 'lib', includes: '*.jar')}
 jarfiles = path(refid: 'projectJars') //jar-on belul nem mukodott a path()
 cleanDirectory << 'build'
-cleanPattern << 'goauthclient.jar'
+cleanPattern << 'bin/goauthclient.jar'
 
 
 target(name: 'default') {
