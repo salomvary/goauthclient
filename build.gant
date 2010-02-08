@@ -3,26 +3,27 @@ ant.taskdef (  name : 'groovyc' , classname : 'org.codehaus.groovy.ant.Groovyc' 
 groovyHome = System.getenv().GROOVY_HOME
 path(id: 'projectJars') { fileset(dir: 'lib', includes: '*.jar')}
 jarfiles = path(refid: 'projectJars') //jar-on belul nem mukodott a path()
-cleanDirectory << 'bin'
+cleanDirectory << 'build'
 cleanPattern << 'goauthclient.jar'
 
 
 target(name: 'default') {
 	echo ("Building with groovy home: ${groovyHome}")
+	mkdir (dir: 'build')
 	mkdir (dir: 'bin')
 	groovyc (
 		classpath: path(refid: 'projectJars'),
 		srcdir: 'src',
-		destdir: 'bin'
+		destdir: 'build'
 	)
-	mkdir(dir: 'bin/META-INF')
-	manifest ( file : 'bin/META-INF/MANIFEST.MF' ) {
+	mkdir(dir: 'build/META-INF')
+	manifest ( file : 'build/META-INF/MANIFEST.MF' ) {
 		attribute ( name : 'Main-Class' , value: 'GenericClient' )
 	}
 	jar(
-		destfile: 'goauthclient.jar',
-		basedir: 'bin',
-		manifest: 'bin/META-INF/MANIFEST.MF'
+		destfile: 'bin/goauthclient.jar',
+		basedir: 'build',
+		manifest: 'build/META-INF/MANIFEST.MF'
 	) 
 	{
 		jarfiles.each { 

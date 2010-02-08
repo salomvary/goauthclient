@@ -24,4 +24,4 @@ twitter.groovy GET http://twitter.com/direct_messages.json
 2. gant
 
 == Running standalone ==
-java -jar goauthclient.jar [arguments]
+java -jar bin/goauthclient.jar [arguments]
