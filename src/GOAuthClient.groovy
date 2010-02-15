@@ -31,11 +31,16 @@ class GOAuthClient {
     this.props = new ConfigSlurper().parse(new File(this.conf).toURL())
     System.err.println "Props: "+props
 
-    provider = new OAuthServiceProvider(
-      props.requestUrl, 
-      props.authorizationUrl, 
-      props.accessUrl
-    )
+    if(! props.requestorId) {
+      provider = new OAuthServiceProvider(
+        props.requestUrl, 
+        props.authorizationUrl, 
+        props.accessUrl
+      )
+    } else {
+      //2 legged doesn't need this
+      provider = null
+    }
 
     consumer = new OAuthConsumer(
       null, 
@@ -46,12 +51,16 @@ class GOAuthClient {
 
     accessor = new OAuthAccessor(consumer)
 
-    if(! props.accessToken) {
-      getToken()
+    if(! props.requestorId) { //2 legged does't need token
+      if(! props.accessToken) {
+        getToken()
+      } else {
+        accessor.accessToken = props.accessToken
+        accessor.tokenSecret = props.tokenSecret
+        System.err.println "Using access token: "+accessor.accessToken
+      }
     } else {
-      accessor.accessToken = props.accessToken
-      accessor.tokenSecret = props.tokenSecret
-      System.err.println "Using access token: "+accessor.accessToken
+        System.err.println "Using 2 legged authentication, xoauth_requestor_id="+props.requestorId
     }
   }
 
@@ -110,6 +119,9 @@ class GOAuthClient {
       def p = params.collect {
         k,v -> new OAuth.Parameter(k,v) 
       };
+      if(this.props.requestorId) { //use 2 legged
+        p.add(new OAuth.Parameter('xoauth_requestor_id', this.props.requestorId))
+      }
       if(! body) {
         return client.invoke(accessor, method, url, p)
       } else if(["POST","PUT"].contains(method)){

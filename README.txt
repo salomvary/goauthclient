@@ -5,6 +5,13 @@ A very simple command line HTTP client with OAuth support, written in Groovy.
 1. obtain consumer key/secret (if you're using twitter, start here: https://twitter.com/apps)
 2. create/edit your config (see twitter.groovy.example)
 
+=== 2 legged OAuth ===
+Create a config like this (you have to know the requestor user's container specific id):
+
+consumerKey="myKey"
+consumerSecret="mySecret"
+requestorId="123456"
+
 == Running from source ==
 1. install groovy
 2. create config (example: twitter.groovy.example)
