@@ -49,6 +49,11 @@ class GOAuthClient {
       provider
     )
 
+    if(props.rsaPrivateKey) {
+      consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.RSA_SHA1);
+      consumer.setProperty(net.oauth.signature.RSA_SHA1.PRIVATE_KEY, props.rsaPrivateKey);
+    }
+
     accessor = new OAuthAccessor(consumer)
 
     if(! props.requestorId) { //2 legged does't need token
